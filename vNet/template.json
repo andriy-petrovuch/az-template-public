@@ -55,7 +55,6 @@
         "FirewallInternalInterfaceIP": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), variables('baseThirdOctetAdjusted'), '.4'), variables('errorMessage'))]",
         "GatewaySubnet": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 15), '.128/26'), variables('errorMessage'))]",
         "ServerSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 1), '.0/24'), variables('errorMessage'))]",
-        "ServerSubnet2": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 2), '.0/24'), variables('errorMessage'))]",
         "VirtualDesktopSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 6), '.0/24'), variables('errorMessage'))]",
         "TestAndDevSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 11), '.0/24'), variables('errorMessage'))]",
         "BackupApplianceSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 13), '.0/24'), variables('errorMessage'))]",
@@ -280,10 +279,6 @@
     "ServerSubnet1": {
       "type": "string",
       "value": "[variables('ServerSubnet1')]"
-    },
-    "ServerSubnet2": {
-      "type": "string",
-      "value": "[variables('ServerSubnet2')]"
     },
     "VirtualDesktopSubnet1": {
       "type": "string",
