@@ -1,4 +1,4 @@
-# ARM Template for Virtual Network Deployment
+# vNetWithRoute
 
 This ARM template deploys a virtual network with multiple subnets and a route table. The virtual network address space must be /20 and include a slash 20 at the end. The resource group must be created prior to deployment, and the default context should be set.
 
