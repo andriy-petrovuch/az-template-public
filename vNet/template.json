@@ -20,6 +20,7 @@
         },
         "resourcePrefix": {
             "type": "string",
+            "defaultValue": "d",
             "metadata": {
                 "description": "Prefix to be appended to all resource names."
             }
