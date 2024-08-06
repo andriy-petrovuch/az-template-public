@@ -52,7 +52,13 @@ To create a resource group and deploy this template using PowerShell, follow the
 
 2. **Deploy the Template**:
     ```powershell
-    $TemplateUri = "https://github.com/andriy-petrovuch/az-template-public/blob/main/vNetWithRoute/template.json" 
+    $TemplateUri = "https://raw.githubusercontent.com/andriy-petrovuch/az-template-public/main/vNetWithRoute/template.json" 
+    New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri $TemplateUri
+    ```
+3. **Deploy the Template with a Parametr file**:
+    ```powershell
+    $ParamUri = 
+    $TemplateUri = "https://raw.githubusercontent.com/andriy-petrovuch/az-template-public/main/vNetWithRoute/template.json" 
     New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri $TemplateUri
     ```
 
