@@ -52,9 +52,10 @@ To create a resource group and deploy this template using PowerShell, follow the
 
 2. **Deploy the Template**:
     ```powershell
-    New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri <LinkToTemplateFile> -resourcePrefix <ResourcePrefix> -virtualNetworksAddress <VirtualNetworksAddress>
+    $TemplateUri = "https://github.com/andriy-petrovuch/az-template-public/blob/main/vNetWithRoute/template.json" 
+    New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri $TemplateUri
     ```
 
-Replace `<ResourceGroupName>`, `<Location>`, `<LinkToTemplateFile>`, `<ResourcePrefix>`, and `<VirtualNetworksAddress>` with appropriate values.
+Replace `$TemplateUri`, `<ResourceGroupName>`, `<Location>`, `<LinkToTemplateFile>`, `<ResourcePrefix>`, and `<VirtualNetworksAddress>` with appropriate values.
 
 **Note**: The region will match the resource group region by default. If the region must be different from the resource group, it can be overridden with the `location` parameter.
