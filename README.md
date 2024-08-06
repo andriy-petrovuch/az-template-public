@@ -57,7 +57,7 @@ To create a resource group and deploy this template using PowerShell, follow the
     $TemplateUri = "https://raw.githubusercontent.com/andriy-petrovuch/az-template-public/main/vNetWithRoute/template.json" 
     New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri $TemplateUri
     ```
-Must provide `$TemplateUri`, `<ResourceGroupName>`, `<resourcePrefix>`, and `<FirewallApplianceInUse>` `<virtualNetworksAddress>` with appropriate values.
+Must provide `$TemplateUri`, `<ResourceGroupName>`, `<resourcePrefix>`, `<FirewallApplianceInUse>` and `<virtualNetworksAddress>` with appropriate values.
 
 3. **Deploy the Template with a Parameter file**:
     ```powershell
