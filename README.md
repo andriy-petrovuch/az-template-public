@@ -1,4 +1,4 @@
-# vNetWithRoute
+# vNetWithRoute. ARM Template for Virtual Network Deployment with Admin Defined Route Teable 
 
 This ARM template deploys a virtual network with multiple subnets and a route table. The virtual network address space must be /20 and include a slash 20 at the end. The resource group must be created prior to deployment, and the default context should be set.
 
@@ -43,12 +43,18 @@ This ARM template deploys a virtual network with multiple subnets and a route ta
 
 ## Deployment
 
-To deploy this template using PowerShell, use the following command:
+To create a resource group and deploy this template using PowerShell, follow these steps:
 
-```powershell
-New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri <LinkToTemplateFile> -resourcePrefix <ResourcePrefix> -virtualNetworksAddress <VirtualNetworksAddress>
-```
+1. **Create a Resource Group**:
+    ```powershell
+    New-AzResourceGroup -Name <ResourceGroupName> -Location <Location>
+    ```
 
-Replace `<ResourceGroupName>`, `<LinkToTemplateFile>`, `<ResourcePrefix>`, and `<VirtualNetworksAddress>` with appropriate values.
+2. **Deploy the Template**:
+    ```powershell
+    New-AzResourceGroupDeployment -ResourceGroupName <ResourceGroupName> -TemplateUri <LinkToTemplateFile> -resourcePrefix <ResourcePrefix> -virtualNetworksAddress <VirtualNetworksAddress>
+    ```
+
+Replace `<ResourceGroupName>`, `<Location>`, `<LinkToTemplateFile>`, `<ResourcePrefix>`, and `<VirtualNetworksAddress>` with appropriate values.
 
 **Note**: The region will match the resource group region by default. If the region must be different from the resource group, it can be overridden with the `location` parameter.
