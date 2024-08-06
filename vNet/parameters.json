@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "",
+            "value": "centralus",
             "metadata": {
                 "description": "The location of the resources."
             }
