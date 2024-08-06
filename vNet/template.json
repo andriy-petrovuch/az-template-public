@@ -29,6 +29,13 @@
             "metadata": {
                 "description": "The address space of the virtual network must be /20 and include a slash 20 at the end."
               }
+        },
+        "FirewallApplianceInUse": {
+             "type": "string",
+             "allowedValues": ["yes", "no"],
+             "metadata": {
+               "description": "Specifies whether the firewall appliance is in use. If YES, the route table will be created ad assosiated with all subbnets"
+             }
         }
     },
     "variables": {
@@ -46,11 +53,12 @@
         "FirewallExternalInterfaceIP": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 15), '.254'), variables('errorMessage'))]",
         "FirewallInternalSubnet": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), variables('baseThirdOctetAdjusted'), '.0/26'), variables('errorMessage'))]",
         "FirewallInternalInterfaceIP": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), variables('baseThirdOctetAdjusted'), '.4'), variables('errorMessage'))]",
+        "GatewaySubnet": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 15), '.128/26'), variables('errorMessage'))]",
         "ServerSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 1), '.0/24'), variables('errorMessage'))]",
         "ServerSubnet2": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 2), '.0/24'), variables('errorMessage'))]",
         "VirtualDesktopSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 6), '.0/24'), variables('errorMessage'))]",
         "TestAndDevSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 11), '.0/24'), variables('errorMessage'))]",
-        "BackupApplianceSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 13), '.0/24'), variables('errorMessage'))]"
+        "BackupApplianceSubnet1": "[if(and(variables('isSlash20'), variables('isValidThirdOctet')), concat(variables('baseAddressPrefix'), add(variables('baseThirdOctetAdjusted'), 13), '.0/24'), variables('errorMessage'))]",
     },
     "resources": [
         {
@@ -59,6 +67,7 @@
             "name": "[variables('DefaultRouteTableName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
+            "condition": "[equals(parameters('FirewallApplianceInUse'), 'yes')]",
             "properties": {
                 "disableBgpRoutePropagation": false,
                 "routes": [
@@ -141,6 +150,19 @@
             },
             "subnets": [
                 {
+                    "name": "GatewaySubnet",
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworksName'), 'GatewaySubnet')]",
+                    "properties": {
+                        "addressPrefixes": [
+                            "[variables('GatewaySubnet')]"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Disabled"
+                    },
+                    "type": "Microsoft.Network/virtualNetworks/subnets"
+                },
+                {
                     "name": "FirewallExternalSubnet",
                     "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworksName'), 'FirewallExternalSubnet')]",
                     "properties": {
@@ -160,9 +182,7 @@
                         "addressPrefixes": [
                             "[variables('FirewallinternalSubnet')]"
                         ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
+                        "routeTable": "[if(equals(parameters('FirewallApplianceInUse'), 'yes'),  json(concat('{\"id\": \"', resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName')), '\"}')), json('null'))]",
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Disabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -176,25 +196,7 @@
                         "addressPrefixes": [
                             "[variables('ServerSubnet1')]"
                         ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
-                        "delegations": [],
-                        "privateEndpointNetworkPolicies": "Disabled",
-                        "privateLinkServiceNetworkPolicies": "Enabled"
-                    },
-                    "type": "Microsoft.Network/virtualNetworks/subnets"
-                },
-                {
-                    "name": "ServerSubnet2",
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworksName'), 'ServerSubnet2')]",
-                    "properties": {
-                        "addressPrefixes": [
-                            "[variables('ServerSubnet2')]"
-                        ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
+                        "routeTable": "[if(equals(parameters('FirewallApplianceInUse'), 'yes'),  json(concat('{\"id\": \"', resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName')), '\"}')), json('null'))]",
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Disabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -208,9 +210,7 @@
                         "addressPrefixes": [
                             "[variables('BackupApplianceSubnet1')]"
                         ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
+                        "routeTable": "[if(equals(parameters('FirewallApplianceInUse'), 'yes'),  json(concat('{\"id\": \"', resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName')), '\"}')), json('null'))]",
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Disabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -224,9 +224,7 @@
                         "addressPrefixes": [
                             "[variables('TestAndDevSubnet1')]"
                         ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
+                        "routeTable": "[if(equals(parameters('FirewallApplianceInUse'), 'yes'),  json(concat('{\"id\": \"', resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName')), '\"}')), json('null'))]",
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Disabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -240,9 +238,7 @@
                         "addressPrefixes": [
                             "[variables('VirtualDesktopSubnet1')]"
                         ],
-                        "routeTable": {
-                            "id": "[resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName'))]"
-                        },
+                        "routeTable": "[if(equals(parameters('FirewallApplianceInUse'), 'yes'),  json(concat('{\"id\": \"', resourceId('Microsoft.Network/routeTables', variables('DefaultRouteTableName')), '\"}')), json('null'))]",
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Disabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -260,6 +256,10 @@
     "virtualNetworksAddress": {
         "type": "string",
         "value": "[parameters('virtualNetworksAddress')]"
+        },
+    "GatewaySubnet": {
+        "type": "string",
+        "value": "[variables('GatewaySubnet')]"
         },
     "FirewallExternalSubnet": {
       "type": "string",
@@ -296,6 +296,10 @@
     "BackupApplianceSubnet1": {
       "type": "string",
       "value": "[variables('BackupApplianceSubnet1')]"
+    },
+    "RouteTable": {
+        "type": "string",
+        "value":   "[if(equals(parameters('FirewallApplianceInUse'), 'yes'), 'Route Table created and associated with all subnets.', 'No route table was created and no subnet association was made.')]"
     }
   }
 }
