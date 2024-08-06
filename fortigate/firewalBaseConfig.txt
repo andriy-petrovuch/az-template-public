@@ -1,0 +1,138 @@
+config system global
+    set gui-certificates enable
+    set sslvpn-web-mode enable
+    set autorun-log-fsck enable
+end
+
+config log disk setting
+    set status enable
+    set maximum-log-age 90
+    set full-first-warning-threshold 70
+end
+
+config user local
+    edit "guest"
+        set status disable
+    next
+end
+
+config system settings
+    set gui-dos-policy enable
+    set gui-dynamic-routing enable
+    set gui-sslvpn enable
+    set gui-sslvpn-realms enable
+    set gui-sslvpn-personal-bookmarks enable
+    set gui-ips enable
+    set gui-wireless-controller disable
+    set gui-switch-controller disable
+    set gui-multiple-interface-policy enable
+end
+
+config system global
+    set admin-lockout-duration 900
+    set admin-sport 8443
+    set admintimeout 60
+end
+
+config system interface
+    edit "port1"
+        set alias External
+        set allowaccess ping https ssh
+        set role wan
+    next
+    edit "port2"
+        set alias Internal
+        set allowaccess ping https ssh snmp
+        set role lan
+        set device-identification enable
+end
+
+config system snmp sysinfo
+    set status disable
+    set description "Device"
+    set location "Location"
+end
+
+config firewall policy
+    delete 1
+end
+
+config firewall policy
+    edit 1
+        set name "DefaultOut"
+        set srcintf "port2"
+        set dstintf "port1"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set nat enable
+    next
+end
+
+config firewall address
+    edit "192.168.0.0/16"
+        set subnet 192.168.0.0 255.255.0.0
+    next
+    edit "172.16.0.0/12"
+        set subnet 172.16.0.0 255.240.0.0
+    next
+    edit "10.0.0.0/8"
+        set subnet 10.0.0.0 255.0.0.0
+    next
+    edit "Miles_74.118.244.0/22"
+        set subnet 74.118.244.0 255.255.252.0
+end
+
+config firewall addrgrp
+    edit "MGMT_IPs"
+        set member "192.168.0.0/16" "172.16.0.0/12" "10.0.0.0/8" "Miles_74.118.244.0/22"
+end
+
+config firewall service custom
+    edit GUI_HTTPS
+        set tcp-portrange 8443
+end
+
+config firewall service group
+    edit "MGMT_PORTS"
+       set member "GUI_HTTPS" "SSH"
+    next
+end
+
+
+config firewall local-in-policy
+    edit 1
+        set intf any
+        set srcaddr "MGMT_IPs"
+        set dstaddr "all"
+        set action accept
+        set service "MGMT_PORTS"
+        set schedule "always"
+        set status enable
+    next
+    edit 2
+        set intf any
+        set srcaddr "all"
+        set dstaddr "all"
+        set action deny
+        set service "MGMT_PORTS"
+        set schedule "always"
+        set status enable
+end
+
+config system fortiguard
+    set auto-firmware-upgrade enable
+    set auto-firmware-upgrade-day friday
+    set auto-firmware-upgrade-start-hour 2
+    set auto-firmware-upgrade-end-hour 4
+end
+
+config system admin
+    edit "miles"
+        set trusthost1 10.0.0.0 255.0.0.0
+        set trusthost2 172.16.0.0 255.240.0.0
+        set trusthost3 192.168.0.0 255.255.0.0
+        set trusthost4 74.118.244.0 255.255.252.0
+end
