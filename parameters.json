@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "",
+            "metadata": {
+                "description": "The location of the resources."
+            }
+        },
+        "tags": {
+            "value": {
+                // "CustomerName": "Miles Testing",
+                // "Division": "IT",
+                // "Team": "IT Project Team 2",
+                // "Env": "Testing",
+                "DeploymentMethod": "IaC / ARM template"
+            },
+            "metadata": {
+                "description": "Tags to be applied to all resources."
+            }
+        },
+        "resourcePrefix": {
+            "value": "",
+            "metadata": {
+                "description": "Prefix to be appended to all resource names."
+            }
+        },
+        "virtualNetworksAddress": {
+            "value": "",
+            "metadata": {
+                "description": "The address space of the virtual network must be /20 and include a slash 20 at the end."
+              }
+        }
+    }
+}
