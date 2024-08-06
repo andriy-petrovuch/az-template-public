@@ -21,16 +21,22 @@
             }
         },
         "resourcePrefix": {
-            "value": "",
+            "value": "MiT",
             "metadata": {
                 "description": "Prefix to be appended to all resource names."
             }
         },
         "virtualNetworksAddress": {
-            "value": "",
+            "value": "172.16.32.0/20",
             "metadata": {
                 "description": "The address space of the virtual network must be /20 and include a slash 20 at the end."
               }
-        }
+        },
+        "FirewallApplianceInUse": {
+            "value": "yes",
+            "metadata": {
+              "description": "Specifies whether the firewall appliance is in use. If YES, the route table will be created ad assosiated with all subbnets"
+            }
+       }
     }
 }
