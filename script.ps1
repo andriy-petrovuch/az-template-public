@@ -104,7 +104,7 @@ do {
 } until (Validate-VirtualNetworkAddress -address $virtualNetworksAddress)
 
 do {
-    $FirewallApplianceInUse = Read-Host "Is the Fortigate appliance in use? (yes or no)"
+    $FirewallApplianceInUse = Read-Host "Deploy the Virtual FortiGate VM appliance? (yes or no)"
 } until ($FirewallApplianceInUse -eq "yes" -or $FirewallApplianceInUse -eq "no")
 
 if ($FirewallApplianceInUse -eq "yes") {
